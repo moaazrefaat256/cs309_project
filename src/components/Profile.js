@@ -38,3 +38,44 @@ export default function Profile() {
   };
 
   const initials = user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
+  return (
+    <div className="card wide">
+      <div className="profile-head">
+        <div className="avatar">{initials}</div>
+        <div>
+          <h2>{user.name}</h2>
+          <span className="badge">{user.role}</span>
+        </div>
+      </div>
+
+      {saved && !editing && <p className="success">Profile updated successfully.</p>}
+
+      {!editing ? (
+        <>
+          <dl className="details">
+            <dt>Email</dt><dd>{user.email}</dd>
+            <dt>Phone</dt><dd>{user.phone}</dd>
+            <dt>Bio</dt><dd>{user.bio || "—"}</dd>
+          </dl>
+          <button className="btn" onClick={() => { setSaved(false); setEditing(true); }}>
+            Edit profile
+          </button>
+        </>
+      ) : (
+        <form onSubmit={onSave} noValidate>
+          <Field label="Full name" name="name" value={form.name} onChange={onChange} error={errors.name} />
+          <Field label="Email (cannot be changed)" name="email" value={form.email} disabled />
+          <Field label="Phone" name="phone" value={form.phone} onChange={onChange} error={errors.phone} />
+          <Field label={`Bio (${form.bio.length}/160)`} name="bio" error={errors.bio}>
+            <textarea id="bio" name="bio" rows="3" value={form.bio} onChange={onChange} />
+          </Field>
+          <div className="row">
+            <button className="btn" type="submit">Save changes</button>
+            <button className="btn secondary" type="button" onClick={onCancel}>Cancel</button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
